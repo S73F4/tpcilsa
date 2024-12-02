@@ -1,0 +1,43 @@
+import express from 'express';
+import { editarTarea } from './controllers';  // Import your function
+
+const app = express();
+
+// Middleware to parse JSON body
+app.use(express.json());
+
+// Route to edit a task by ID
+app.put('/tasks/:id', editarTarea);
+
+// Example controller function
+export const editarTarea = (req, res) => {
+  const sql = 'UPDATE tasks SET task_name = ? WHERE id = ?';
+  const { id } = req.params;
+  const { task_name } = req.body;
+
+  // Validate the task name
+  if (!task_name || task_name.trim() === '') {
+    return res.status(400).json({ error: 'El nombre de la tarea no puede estar vacio.' });
+  }
+
+  // Execute the query
+  db.query(sql, [task_name, id], (err, result) => {
+    if (err) {
+      console.error('Error executing query:', err);  // Log the error for debugging
+      return res.status(500).json({ error: err.message });  // Send a response with the error
+    }
+
+    // Check if the task was found and updated
+    if (result.affectedRows === 0) {
+      return res.status(404).json({ error: 'Tarea no encontrada.' });
+    }
+
+    // Successfully updated
+    res.status(200).json({ message: 'Tarea editada exitosamente' });
+  });
+};
+
+// Start the server
+app.listen(3000, () => {
+  console.log('Server running on http://localhost:3000');
+});
