@@ -20,9 +20,13 @@ app.use(cors());
 app.use(bodyParser.json());
 app.use(bodyParser.urlencoded({ extended: true }));
 
-const basePath = 'C:\\Users\\hogar\\Desktop\\cilsa-tpfinal\\frontend';
+const path = process.env.BASE_PATH;
+
+console.log(path);  // Should output: C:\myuser\home\Desktop\tpfinal\frontend
+
+//const basePath = 'C:\\Users\\hogar\\Desktop\\cilsa-tpfinal\\frontend';
 //const indexPath = path.join(basePath, 'public', 'index.html');  
-app.use(express.static(path.join(basePath, 'public')));
+app.use(express.static(path.join(path, 'public')));
 //app.locals.db = db;
 // Routes
 app.use('/', routes);
